@@ -43,5 +43,40 @@ app.post("/items", async(req,res)=>{
     }
 });
 
+//PUT updating data 
+app.put("/items/:id", async(req,res) =>{
+   try {
+    const { id } = req.params;
+    const updatedData = req.body;
+    const updatedItem = await Item.findByIdAndUpdate(id, updatedData,
+    {new:true, 
+    });
+    if(!updatedItem){
+        return res.status(404).json({error:"item not found"});
+    }
+    res.json(updatedItem);
+   } catch (error) {
+        res.status(500).json({
+            error: "Failed to update item",
+        });
+   } 
+});
+
+//Deleting items
+app.delete("/items/:id", async(req,res) =>{
+    try {
+        const { id } = req.params;
+        const deletedItem = await Item.findByIdAndDelete(id);
+        if(!deletedItem){
+            return res.status(404).json({error: "Item not found"});
+        }
+        return res.json({message:"Zelda deleted", item:deletedItem});
+    } catch (error) {
+        res.status(500).json({
+            error: "Failed to update item",
+        });
+    }
+});
+
 //start server 
 app.listen(3000,() => console.log("Server is running at http://localhost:3000"));
